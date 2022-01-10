@@ -10,7 +10,7 @@
         </div>
         @endif
 
-        <div class="grid grid-cols-2 gap-5">
+        <div class="grid gap-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
             <div class="mb-5">
                 <h3 class="text-lg font-medium leading-6 text-gray-900">Join Us</h3>
                 <form method="POST" enctype="multipart/form-data" class="shadow sm:rounded-md sm:overflow-hidden"
@@ -43,13 +43,16 @@
                                 </option>
                                 @endforeach
                             </select>
+
+                            @error('category_id')<span class="text-md font-bold text-red-500 text-sm">{{$message}}</span>
+                            @enderror
                         </div>
 
-                        <label class="block text-sm font-medium text-gray-700">
+                        <label class="mx-5 block text-sm font-medium text-gray-700">
                             Photo of Yourself
                         </label>
                         <div
-                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            class="mt-1 mx-5 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                             <div class="space-y-1 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
                                     viewBox="0 0 48 48" aria-hidden="true">

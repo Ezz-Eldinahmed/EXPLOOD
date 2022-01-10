@@ -1,5 +1,5 @@
 <x-app-layout>
-    <h3 class="text-gray-700 text-2xl font-medium">Products</h3>
+    <h3 class="text-gray-700 text-2xl font-medium ml-4">Products</h3>
 
     <div class="bg-white">
         <div class="max-w-4xl mx-auto py-10 px-4 sm:py-16 sm:px-6 lg:max-w-7xl lg:px-8">

@@ -9,10 +9,11 @@
     </div>
     @endif
 
-    <a class="my-2 mx-1 bg-indigo-600 border border-transparent rounded-md py-1 px-2 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{route('categories.create')}}">Create Category</a>
-
     <h3 class="text-gray-700 text-2xl font-medium">Categories</h3>
     <div class="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 mt-6">
+        <a class="my-2 mx-1 bg-indigo-500 border border-transparent rounded-md py-1 px-2 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        href="{{route('categories.create')}}">ADD Category</a>
+
         @forelse ($categories as $category)
         <div class="w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden">
             <a href="{{route('categories.show',$category)}}">

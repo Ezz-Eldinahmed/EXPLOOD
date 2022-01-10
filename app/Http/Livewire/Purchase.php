@@ -61,24 +61,30 @@ class Purchase extends Component
 
                 $this->stock = $this->productSku->count();
 
-                $this->productSku->stock--;
-                $this->productSku->save();
+                if ($this->productSku->stock > $this->count) {
 
-                $cartItem = CartItem::where('product_sku_id', $this->productSku->id)->where('cart_id', $cart->id)->first();
-                if (isset($cartItem)) {
-                    $cartItem->quantity += $this->count;
-                    $cartItem->save();
+                    $this->productSku->stock -= $this->count;
+                    $this->productSku->save();
+
+                    $cartItem = CartItem::where('product_sku_id', $this->productSku->id)->where('cart_id', $cart->id)->first();
+
+                    if (isset($cartItem)) {
+                        $cartItem->quantity += $this->count;
+                        $cartItem->save();
+                    } else {
+                        CartItem::create([
+                            'cart_id' => $cart->id,
+                            'product_sku_id' => $this->productSku->id,
+                            'quantity' => $this->count
+                        ]);
+                    }
+
+                    $this->emit('refresh-cart');
+
+                    session()->flash('success', 'Product Added To Cart Successfully');
                 } else {
-                    CartItem::create([
-                        'cart_id' => $cart->id,
-                        'product_sku_id' => $this->productSku->id,
-                        'quantity' => $this->count
-                    ]);
+                    session()->flash('message', 'Sorry We Have Only' . $this->productSku->stock . ' Of This Product In Stock');
                 }
-
-                $this->emit('refresh-cart');
-
-                session()->flash('success', 'Product Added To Cart Successfully');
             } else {
                 session()->flash('message', 'Please Select Specific Colour & size');
             }

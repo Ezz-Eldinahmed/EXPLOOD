@@ -161,7 +161,7 @@
 
             <div class="mt-3 space-y-1">
                 <!-- Authentication -->
-
+                @guest
                 <x-responsive-nav-link :href="route('login')">
                     {{ __('Login') }}
                 </x-responsive-nav-link>
@@ -169,15 +169,9 @@
                 <x-responsive-nav-link :href="route('register')">
                     {{ __('Register') }}
                 </x-responsive-nav-link>
+                @endguest
 
                 @auth
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
                 <x-responsive-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.index')">
                     {{ __('My ORDERS') }}
                 </x-responsive-nav-link>
@@ -186,6 +180,18 @@
                     :active="request()->routeIs('merchants.create')">
                     {{ __('Merchant') }}
                 </x-responsive-nav-link>
+
+                <div style="float: right">
+                    @livewire('cart.show-cart-button')
+                </div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
                 @endauth
             </div>
         </div>

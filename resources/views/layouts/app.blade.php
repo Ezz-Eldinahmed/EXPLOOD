@@ -33,23 +33,22 @@
 <body class="font-sans antialiased">
     @include('layouts.navigation')
 
-    <div class="flex flex-wrap w-full">
-        <div class="w-2/12 bg-white rounded p-3 shadow-lg min-h-screen">
+    <div class="grid grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
+        <div class="bg-white rounded p-3 shadow-md min-h-screen">
             @if ( !(request()->routeIs('orders.index') || request()->routeIs('payment')) )
             @livewire('search-sidebar')
             @endif
         </div>
 
-        <div class="w-9/12">
-            <div class="p-4">
-                <main>
-                    <h1 class="flex justify-center text-4xl font-semibold my-3">EXPLOOD</h1>
-                    {{ $slot }}
-                </main>
+        <div class="sm:col-span-1 md:col-span-1 lg:col-span-4 xl:col-span-4">
+            <div>
+                <h1 class="flex justify-center text-4xl font-semibold my-3">EXPLOOD</h1>
+                {{ $slot }}
             </div>
         </div>
-        @include('layouts.footer')
     </div>
+    @include('layouts.footer')
+
     @livewireScripts
 </body>
 
