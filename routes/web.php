@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
             'create', 'store', 'update', 'destroy', 'edit'
         ]);
 
-        Route::get('admin/categories', [AdminController::class, 'index'])->name('admin.categories');
+        Route::get('admin/categories', [CategoryController::class, 'adminIndex'])->name('admin.categories');
 
         Route::get('merchants', [MerchantController::class, 'index'])->name('merchants.index');
 

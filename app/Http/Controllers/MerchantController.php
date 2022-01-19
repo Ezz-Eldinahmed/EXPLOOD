@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MerchantRequest;
+use App\Http\Services\ImageServices;
 use App\Models\Category;
 use App\Models\Merchant;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class MerchantController extends Controller
 {
@@ -45,13 +44,7 @@ class MerchantController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-
-            $path = Storage::putFile('merchants', $request->file('image'));
-
-            $merchant->image()->create([
-                'image' => $path,
-                'user_id' => auth()->user()->id
-            ]);
+            ImageServices::store($merchant, $request->file('image'), 'merchants');
         }
 
         foreach ($request->category_id as $category_id) {

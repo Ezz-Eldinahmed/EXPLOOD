@@ -25,7 +25,9 @@ class Purchase extends Component
     public function mount($product)
     {
         $this->product = $product;
-        $this->stock = count($this->product->productSkus);
+        foreach ($this->product->productSkus as $productSku) {
+            $this->stock += $productSku->stock;
+        }
     }
 
     public function incrementCount()
@@ -41,55 +43,57 @@ class Purchase extends Component
 
     public function addToCart()
     {
-        if (Auth::check()) {
-            if (auth()->user()->cart == null) {
-                $cart = Cart::Create(
-                    [
-                        'unique_id' => auth()->user()->id . uniqid(),
-                        'user_id' => auth()->user()->id,
-                        'shipping_cost' => 0
-                    ]
-                );
-            } else {
-                $cart = auth()->user()->cart;
-            }
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
 
-            if (isset($this->colour) && isset($this->size)) {
-                $this->productSku = ProductSku::where('product_id', $this->product->id)
-                    ->where('colour_id', $this->colour)
-                    ->Where('size_id', $this->size)->first();
+        if (auth()->user()->cart == null) {
+            $cart = Cart::Create(
+                [
+                    'unique_id' => auth()->user()->id . uniqid(),
+                    'user_id' => auth()->user()->id,
+                    'number_of_items' => 0
+                ]
+            );
+        } else {
+            $cart = auth()->user()->cart;
+        }
 
-                $this->stock = $this->productSku->count();
+        if (isset($this->colour) && isset($this->size)) {
+            $this->productSku = ProductSku::where('product_id', $this->product->id)
+                ->where('colour_id', $this->colour)
+                ->Where('size_id', $this->size)->first();
 
-                if ($this->productSku->stock > $this->count) {
+            $this->stock = $this->productSku->count();
 
-                    $this->productSku->stock -= $this->count;
-                    $this->productSku->save();
+            if ($this->productSku->stock >= $this->count) {
 
-                    $cartItem = CartItem::where('product_sku_id', $this->productSku->id)->where('cart_id', $cart->id)->first();
+                $this->productSku->stock -= $this->count;
+                $this->productSku->save();
 
-                    if (isset($cartItem)) {
-                        $cartItem->quantity += $this->count;
-                        $cartItem->save();
-                    } else {
-                        CartItem::create([
-                            'cart_id' => $cart->id,
-                            'product_sku_id' => $this->productSku->id,
-                            'quantity' => $this->count
-                        ]);
-                    }
+                $cartItem = CartItem::where('product_sku_id', $this->productSku->id)->where('cart_id', $cart->id)->first();
 
-                    $this->emit('refresh-cart');
-
-                    session()->flash('success', 'Product Added To Cart Successfully');
+                if (isset($cartItem)) {
+                    $cartItem->quantity += $this->count;
+                    $cartItem->save();
                 } else {
-                    session()->flash('message', 'Sorry We Have Only' . $this->productSku->stock . ' Of This Product In Stock');
+                    CartItem::create([
+                        'cart_id' => $cart->id,
+                        'product_sku_id' => $this->productSku->id,
+                        'quantity' => $this->count
+                    ]);
                 }
+
+                $this->emit('reload');
+
+                $this->emit('refresh-cart');
+
+                session()->flash('success', 'Product Added To Cart Successfully');
             } else {
-                session()->flash('message', 'Please Select Specific Colour & size');
+                session()->flash('message', 'Sorry This Product In Stock');
             }
         } else {
-            return redirect()->route('login');
+            session()->flash('message', 'Please Select Specific Colour & size');
         }
     }
 }

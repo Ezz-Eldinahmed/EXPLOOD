@@ -14,6 +14,6 @@ class Controller extends BaseController
 
     public function home()
     {
-        return view('home', ['categories' => Category::paginate(10)]);
+        return view('home', ['categories' => Category::with('image')->paginate(10)]);
     }
 }

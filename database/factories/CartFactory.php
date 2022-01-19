@@ -17,6 +17,7 @@ class CartFactory extends Factory
         return [
             'unique_id' => uniqid(),
             'user_id' => User::all()->random()->id,
+            'number_of_items' => 0
         ];
     }
 }

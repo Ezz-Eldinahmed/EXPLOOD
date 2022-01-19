@@ -16,13 +16,13 @@
             <div class="w-full max-w-sm mx-auto rounded-md shadow-md overflow-hidden">
                 <h4 class="px-5 py-3 text-gray-700">{{$merchant->user->name}}</h4>
 
-                <div class="flex items-end justify-end h-56 w-full bg-cover" style="background-image: url('
-                    @if(isset($merchant->image['image']))
-                        /storage/{{$merchant->image['image']}}
+                <div class="flex items-end justify-end h-56 w-full bg-cover">
+                    <img @if(isset($merchant->image['image']))
+                    src="/storage/{{$merchant->image['image']}}"
                     @else
-                    /images/female-buyer-male-seller-store-260nw-1376189453.jpg
+                    src="/images/female-buyer-male-seller-store-260nw-1376189453.jpg"
                     @endif
-                    ')">
+                    >
                 </div>
                 <div class="px-5 py-3">
                     <h3 class="text-gray-700 uppercase">{{$merchant->description}}</h3>

@@ -89,7 +89,12 @@
                 </form>
             </div>
             <div>
-                <img src="../../../images/promotional-tshirts-500x500.jpg" class="mt-6">
+                <img @if (isset($category->image['image']))
+                src="/storage/{{$category->image['image']}}"
+                @else
+                src="../../../images/promotional-tshirts-500x500.jpg"
+                @endif
+                class="mt-6">
             </div>
         </div>
 </x-guest-layout>

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductRequest;
+use App\Http\Services\ImageServices;
 use App\Models\Category;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -18,7 +16,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index', ['products' => Product::paginate(20)]);
+        return view('products.index', ['products' => Product::with('image')->paginate(20)]);
     }
 
     /**
@@ -49,13 +47,7 @@ class ProductController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-
-            $path = Storage::putFile('products', $request->file('image'));
-
-            $product->image()->create([
-                'image' => $path,
-                'user_id' => auth()->user()->id
-            ]);
+            ImageServices::store($product, $request->file('image'), 'products');
         }
 
         return redirect()->route('products.create')->with('success', 'Product Created Succesfully');
@@ -94,16 +86,10 @@ class ProductController extends Controller
     {
         if ($request->hasFile('image')) {
             if (isset($product->image['image'])) {
-                unlink("storage/" . $product->image['image']);
-                $product->image()->delete();
+                ImageServices::destroy($product);
             }
 
-            $path = Storage::putFile('products', $request->file('image'));
-
-            $product->image()->create([
-                'image' => $path,
-                'user_id' => auth()->user()->id
-            ]);
+            ImageServices::store($product, $request->file('image'), 'products');
         }
 
         $product->update($request->validated());
@@ -120,8 +106,7 @@ class ProductController extends Controller
     public function destroy(Product $product)
     {
         if (isset($product->image['image'])) {
-            unlink("storage/" . $product->image['image']);
-            $product->image()->delete();
+            ImageServices::destroy($product);
         }
 
         $product->delete();

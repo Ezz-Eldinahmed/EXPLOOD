@@ -12,6 +12,6 @@ class CategoryAdmin extends Component
 
     public function render()
     {
-        return view('livewire.category-admin', ['categories' => Category::withCount('products')->paginate(10)]);
+        return view('livewire.category-admin', ['categories' => Category::with('image')->withCount('products')->paginate(10)]);
     }
 }

@@ -18,9 +18,12 @@ class Cart extends Component
 
     public function render()
     {
-        if (Auth::check() && isset(auth()->user()->cart->cartItems)) {
+        if (Auth::check() && isset(auth()->user()->cart)) {
+            $cartItems = CartItem::where('cart_id', auth()->user()->cart->id)
+                ->with(['productSku'])->get();
+
             return view('livewire.cart.cart', [
-                'cartItems' => auth()->user()->cart->cartItems
+                'cartItems' => $cartItems
             ]);
         }
         return view('livewire.cart.cart');
@@ -38,15 +41,25 @@ class Cart extends Component
 
     public function delete(CartItem $cartItem)
     {
+        $cartItem->productSku->stock += $cartItem->quantity;
+        $cartItem->productSku->save();
+
         $cartItem->delete();
 
         session()->flash('success', 'Product Added To Cart Successfully');
+
+        $this->emit('reload');
     }
 
     public function increment(CartItem $cartItem)
     {
         $cartItem->quantity++;
         $cartItem->save();
+
+        $cartItem->productSku->stock--;
+        $cartItem->productSku->save();
+
+        $this->emit('reload');
     }
 
     public function decrement(CartItem $cartItem)
@@ -55,6 +68,11 @@ class Cart extends Component
             $cartItem->quantity--;
             $cartItem->save();
         }
+
+        $cartItem->productSku->stock++;
+        $cartItem->productSku->save();
+
+        $this->emit('reload');
     }
 
     public function orderNow()

@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryRequest;
+use App\Http\Services\ImageServices;
 use App\Models\Category;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -16,7 +15,12 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('categories.index', ['categories' => Category::withCount('products')->paginate(10)]);
+        return view('categories.index', ['categories' => Category::with('image')->withCount('products')->paginate(10)]);
+    }
+
+    public function adminIndex()
+    {
+        return view('admin.index');
     }
 
     /**
@@ -43,13 +47,7 @@ class CategoryController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-
-            $path = Storage::putFile('categories', $request->file('image'));
-
-            $category->image()->create([
-                'image' => $path,
-                'user_id' => auth()->user()->id
-            ]);
+            ImageServices::store($category, $request->file('image'), 'categories');
         }
 
         return redirect()->route('categories.create')->with('success', 'Category Added Succesfully');
@@ -63,7 +61,13 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return view('categories.show', ['category' => $category->load('products')]);
+        return view(
+            'categories.show',
+            [
+                'category' => $category->load(['products', 'image']),
+                'products' => $category->products->load('image')
+            ]
+        );
     }
 
     /**
@@ -88,16 +92,10 @@ class CategoryController extends Controller
     {
         if ($request->hasFile('image')) {
             if (isset($category->image['image'])) {
-                unlink("storage/" . $category->image['image']);
-                $category->image()->delete();
+                ImageServices::destroy($category);
             }
 
-            $path = Storage::putFile('categories', $request->file('image'));
-
-            $category->image()->create([
-                'image' => $path,
-                'user_id' => auth()->user()->id
-            ]);
+            ImageServices::store($category, $request->file('image'), 'categories');
         }
 
         $category->update($request->validated());
@@ -114,8 +112,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if (isset($category->image['image'])) {
-            unlink("storage/" . $category->image['image']);
-            $category->image()->delete();
+            ImageServices::destroy($category);
         }
 
         $category->delete();

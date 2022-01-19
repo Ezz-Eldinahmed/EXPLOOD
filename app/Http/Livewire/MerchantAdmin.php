@@ -9,7 +9,7 @@ class MerchantAdmin extends Component
 {
     public function render()
     {
-        return view('livewire.merchant-admin', ['merchants' => Merchant::latest()->paginate(10)]);
+        return view('livewire.merchant-admin', ['merchants' => Merchant::with(['image', 'user'])->latest()->paginate(10)]);
     }
 
     public function approve(Merchant $merchant)

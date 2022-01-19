@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use App\Models\Category;
-use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 

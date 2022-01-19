@@ -35,7 +35,8 @@
 
     <div class="grid grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5">
         <div class="bg-white rounded p-3 shadow-md min-h-screen">
-            @if ( !(request()->routeIs('orders.index') || request()->routeIs('payment')) )
+            @if ( !(request()->routeIs('orders.index') || request()->routeIs('payment')
+            ) )
             @livewire('search-sidebar')
             @endif
         </div>

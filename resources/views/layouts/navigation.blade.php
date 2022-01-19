@@ -16,16 +16,22 @@
                         {{ __('HOME') }}
                     </x-nav-link>
                     <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.index')">
-                        {{ __('PRODUCT') }}
+                        {{ __('PRODUCTS') }}
                     </x-nav-link>
                     <x-nav-link :href="route('categories.index')" :active="request()->routeIs('categories.index')">
-                        {{ __('CATEGORY') }}
+                        {{ __('CATEGORIES') }}
                     </x-nav-link>
                     @auth
                     <x-nav-link :href="route('merchants.create')" :active="request()->routeIs('merchants.create')">
                         {{ __('MERCHANT') }}
                     </x-nav-link>
                     @endauth
+                    <x-nav-link :href="route('about')" :active="request()->routeIs('about')">
+                        {{ __('ABOUT') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('contact')" :active="request()->routeIs('contact')">
+                        {{ __('CONTACT') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -63,7 +69,7 @@
                             {{ __('MY-ORDERS') }}
                         </x-dropdown-link>
                         <!-- Authentication -->
-                        @can('dashboard',auth()->user())
+                        @can('viewAny',auth()->user())
                         <x-dropdown-link :href="route('admin.dashboard')">
                             {{ __('Dashboard') }}
                         </x-dropdown-link>
